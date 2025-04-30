@@ -1,15 +1,17 @@
 [workspace]
 resolver = "2"
-members = ["contracts", "contracts/contract1", "contracts/contract2", "server"]
+members = ["contracts", "contracts/contract1", "contracts/contract2", "contracts/token", "contracts/amm", "server"]
 
 [workspace.dependencies]
-sdk = { package = "hyle-contract-sdk", version = "0.13.0-rc.4" }
-client-sdk = { default-features = false, package = "hyle-client-sdk", version = "0.13.0-rc.4" }
+sdk = { package = "hyle-contract-sdk", version = "0.13.0-rc.4" , features = ["risc0"]}
+client-sdk = { default-features = false, package = "hyle-client-sdk", version = "0.13.0-rc.4", features = ["risc0"] }
 hyle = { version = "0.13.0-rc.4" }
 
 contracts = { path = "contracts", default-features = false, package = "contracts" }
 contract1 = { path = "contracts/contract1", package = "contract1" }
 contract2 = { path = "contracts/contract2", package = "contract2" }
+token = { path = "contracts/token", package = "token" }
+amm = { path = "contracts/amm", package = "amm" }
 
 [workspace.package]
 version = "0.4.1"

@@ -82,6 +82,26 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "683d7910e743518b0e34f1186f92494becacb047c7b6bf616c96772180fef923"
 
 [[package]]
+name = "amm"
+version = "0.0.0"
+dependencies = [
+ "amm",
+ "anyhow",
+ "borsh",
+ "clap",
+ "hyle-client-sdk",
+ "hyle-contract-sdk",
+ "hyle-hydentity",
+ "hyle-hyllar",
+ "risc0-zkvm",
+ "serde",
+ "token",
+ "tokio",
+ "tracing",
+ "tracing-subscriber 0.3.19",
+]
+
+[[package]]
 name = "android-tzdata"
 version = "0.1.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1015,6 +1035,7 @@ dependencies = [
  "risc0-zkvm",
  "serde",
  "tokio",
+ "tracing",
  "tracing-subscriber 0.3.19",
 ]
 
@@ -1031,6 +1052,7 @@ dependencies = [
  "risc0-zkvm",
  "serde",
  "tokio",
+ "tracing",
  "tracing-subscriber 0.3.19",
 ]
 
@@ -1038,10 +1060,12 @@ dependencies = [
 name = "contracts"
 version = "0.0.0"
 dependencies = [
+ "amm",
  "contract1",
  "contract2",
  "hyle-contract-sdk",
  "risc0-build",
+ "token",
 ]
 
 [[package]]
@@ -5550,6 +5574,24 @@ name = "tinyvec_macros"
 version = "0.1.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "1f3ccbac311fea05f86f61904b462b55fb3df8837a366dfc601a0161d0532f20"
+
+[[package]]
+name = "token"
+version = "0.0.0"
+dependencies = [
+ "anyhow",
+ "borsh",
+ "clap",
+ "hyle-client-sdk",
+ "hyle-contract-sdk",
+ "hyle-hyllar",
+ "risc0-zkvm",
+ "serde",
+ "token",
+ "tokio",
+ "tracing",
+ "tracing-subscriber 0.3.19",
+]
 
 [[package]]
 name = "tokio"

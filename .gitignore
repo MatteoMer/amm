@@ -1,2 +1,8 @@
 target
 data
+.docs-cache
+.cursor
+.cursorignore
+.cursorrules
+.cursorrules.md
+.cursorrules.txt

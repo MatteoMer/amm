@@ -3,24 +3,25 @@ use std::str;
 use anyhow::{anyhow, Context, Result};
 use client_sdk::{
     contract_indexer::{
-        axum::{extract::State, http::StatusCode, response::IntoResponse, Json, Router},
+        axum::{extract::State, extract::Path, http::StatusCode, response::IntoResponse, Json, Router},
         utoipa::openapi::OpenApi,
         utoipa_axum::{router::OpenApiRouter, routes},
         AppError, ContractHandler, ContractHandlerStore,
     },
     transaction_builder::TxExecutorHandler,
 };
-use sdk::Hashed;
+use sdk::{Hashed, Identity};
 use serde::Serialize;
+use tracing;
 
 use crate::*;
 use client_sdk::contract_indexer::axum;
 use client_sdk::contract_indexer::utoipa;
 
-impl ContractHandler for Contract2 {
-    async fn api(store: ContractHandlerStore<Contract2>) -> (Router<()>, OpenApi) {
+impl ContractHandler for Token {
+    async fn api(store: ContractHandlerStore<Token>) -> (Router<()>, OpenApi) {
         let (router, api) = OpenApiRouter::default()
-            .routes(routes!(get_state))
+            .routes(routes!(get_state, get_balance))
             .split_for_parts();
 
         (router.with_state(store), api)
@@ -62,9 +63,9 @@ impl ContractHandler for Contract2 {
 #[utoipa::path(
     get,
     path = "/state",
-    tag = "Contract",
+    tag = "Token",
     responses(
-        (status = OK, description = "Get json state of contract")
+        (status = OK, description = "Get json state of token contract")
     )
 )]
 pub async fn get_state<S: Serialize + Clone + 'static>(
@@ -76,3 +77,28 @@ pub async fn get_state<S: Serialize + Clone + 'static>(
         anyhow!("No state found for contract '{}'", store.contract_name),
     ))
 }
+
+#[utoipa::path(
+    get,
+    path = "/balance/{identity}",
+    tag = "Token",
+    responses(
+        (status = OK, description = "Get balance for an identity")
+    )
+)]
+pub async fn get_balance(
+    State(state): State<ContractHandlerStore<Token>>,
+    Path(identity): Path<String>,
+) -> Result<impl IntoResponse, AppError> {
+    let store = state.read().await;
+    
+    let token = store.state.as_ref().ok_or(AppError(
+        StatusCode::NOT_FOUND,
+        anyhow!("No state found for contract '{}'", store.contract_name),
+    ))?;
+    
+    let identity = Identity(identity);
+    let balance = token.balances.get(&identity).cloned().unwrap_or(0);
+    
+    Ok(Json(balance))
+} 

@@ -33,6 +33,8 @@ pub struct AppModuleCtx {
     pub node_client: Arc<NodeApiHttpClient>,
     pub contract1_cn: ContractName,
     pub contract2_cn: ContractName,
+    pub token_cn: ContractName,
+    pub amm_cn: ContractName,
 }
 
 #[derive(Debug, Clone)]
@@ -56,6 +58,8 @@ impl Module for AppModule {
         let state = RouterCtx {
             contract1_cn: ctx.contract1_cn.clone(),
             contract2_cn: ctx.contract2_cn.clone(),
+            token_cn: ctx.token_cn.clone(),
+            amm_cn: ctx.amm_cn.clone(),
             app: Arc::new(Mutex::new(HyleOofCtx {
                 bus: ctx.common.bus.new_handle(),
             })),
@@ -100,6 +104,8 @@ struct RouterCtx {
     pub client: Arc<NodeApiHttpClient>,
     pub contract1_cn: ContractName,
     pub contract2_cn: ContractName,
+    pub token_cn: ContractName,
+    pub amm_cn: ContractName,
 }
 
 pub struct HyleOofCtx {

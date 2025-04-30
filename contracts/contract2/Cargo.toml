@@ -22,6 +22,7 @@ serde = { version = "1.0", default-features = false, features = [
   "alloc",
 ] }
 borsh = { version = "1.5.7" }
+tracing = "0.1.41"
 
 
 risc0-zkvm = { version = "2.0.0", default-features = false, optional = true, features = [
@@ -30,6 +31,7 @@ risc0-zkvm = { version = "2.0.0", default-features = false, optional = true, fea
 client-sdk = { workspace = true, default-features = false, features = [
   "risc0",
   "rest",
+  "indexer"
 ], optional = true }
 
 [dev-dependencies]

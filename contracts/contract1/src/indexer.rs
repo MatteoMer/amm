@@ -51,7 +51,7 @@ impl ContractHandler for Contract1 {
         let program_outputs = str::from_utf8(&hyle_output.program_outputs).unwrap_or("no output");
 
         sdk::info!("🚀 Executed {contract_name}: {}", program_outputs);
-        sdk::tracing::debug!(
+        tracing::debug!(
             handler = %contract_name,
             "hyle_output: {:?}", hyle_output
         );

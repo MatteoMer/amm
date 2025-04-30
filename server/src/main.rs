@@ -5,6 +5,8 @@ use clap::Parser;
 use client_sdk::rest_client::{IndexerApiHttpClient, NodeApiHttpClient};
 use contract1::Contract1;
 use contract2::Contract2;
+use token::Token;
+use amm::Amm;
 use hyle::{
     bus::{metrics::BusMetrics, SharedMessageBus},
     indexer::{
@@ -39,6 +41,12 @@ pub struct Args {
 
     #[arg(long, default_value = "contract2")]
     pub contract2_cn: String,
+
+    #[arg(long, default_value = "token")]
+    pub token_cn: String,
+
+    #[arg(long, default_value = "amm")]
+    pub amm_cn: String,
 }
 
 #[tokio::main]
@@ -72,6 +80,16 @@ async fn main() -> Result<()> {
             program_id: contract2::client::tx_executor_handler::metadata::PROGRAM_ID,
             initial_state: Contract2::default().commit(),
         },
+        init::ContractInit {
+            name: args.token_cn.clone().into(),
+            program_id: token::client::tx_executor_handler::metadata::PROGRAM_ID,
+            initial_state: Token::default().commit(),
+        },
+        init::ContractInit {
+            name: args.amm_cn.clone().into(),
+            program_id: amm::client::tx_executor_handler::metadata::PROGRAM_ID,
+            initial_state: Amm::default().commit(),
+        },
     ];
 
     match init::init_node(node_client.clone(), indexer_client.clone(), contracts).await {
@@ -99,6 +117,8 @@ async fn main() -> Result<()> {
         node_client,
         contract1_cn: args.contract1_cn.clone().into(),
         contract2_cn: args.contract2_cn.clone().into(),
+        token_cn: args.token_cn.clone().into(),
+        amm_cn: args.amm_cn.clone().into(),
     });
     let start_height = app_ctx.node_client.get_block_height().await?;
     let prover_ctx = Arc::new(ProverModuleCtx {
@@ -118,6 +138,20 @@ async fn main() -> Result<()> {
     handler
         .build_module::<ContractStateIndexer<Contract2>>(ContractStateIndexerCtx {
             contract_name: args.contract2_cn.into(),
+            common: ctx.clone(),
+        })
+        .await?;
+
+    handler
+        .build_module::<ContractStateIndexer<Token>>(ContractStateIndexerCtx {
+            contract_name: args.token_cn.into(),
+            common: ctx.clone(),
+        })
+        .await?;
+
+    handler
+        .build_module::<ContractStateIndexer<Amm>>(ContractStateIndexerCtx {
+            contract_name: args.amm_cn.into(),
             common: ctx.clone(),
         })
         .await?;
